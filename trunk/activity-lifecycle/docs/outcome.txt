@@ -1,0 +1,29 @@
+ccollins@crotalus:~$ adb -e logcat "*:s ActivityLifecycle:v"
+
+---------------------------APP started----------------------------------
+D/ActivityLifecycle(  223): onCreate -- ENTIRE lifecycle START
+D/ActivityLifecycle(  223):    onStart -- VISIBLE lifecycle START
+D/ActivityLifecycle(  223):       onResume -- FOREGROUND lifecycle START
+---------------------------HOME pressed---------------------------------
+D/ActivityLifecycle(  223):       onPause -- FOREGROUND lifecycle STOP
+D/ActivityLifecycle(  223):    onStop -- VISIBLE lifecycle STOP
+---------------------------APP started----------------------------------
+D/ActivityLifecycle(  223): onCreate -- ENTIRE lifecycle START
+D/ActivityLifecycle(  223):    onStart -- VISIBLE lifecycle START
+D/ActivityLifecycle(  223):       onResume -- FOREGROUND lifecycle START
+---------------------------INCOMING CALL ANSWERED-----------------------
+D/ActivityLifecycle(  223):       onPause -- FOREGROUND lifecycle STOP
+D/ActivityLifecycle(  223):    onStop -- VISIBLE lifecycle STOP
+---------------------------INCOMING CALL ENDED--------------------------
+D/ActivityLifecycle(  223):    onRestart -- VISIBLE lifecycle RE-START
+D/ActivityLifecycle(  223):    onStart -- VISIBLE lifecycle START
+D/ActivityLifecycle(  223):       onResume -- FOREGROUND lifecycle START
+---------------------------HALT VM ____---------------------------------
+D/ActivityLifecycle(  242): onCreate -- ENTIRE lifecycle START
+D/ActivityLifecycle(  242):    onStart -- VISIBLE lifecycle START
+D/ActivityLifecycle(  242):       onResume -- FOREGROUND lifecycle START
+---------------------------CALL FINISH----------------------------------
+D/ActivityLifecycle(  451):       onPause -- FOREGROUND lifecycle STOP
+D/ActivityLifecycle(  451):    onStop -- VISIBLE lifecycle STOP
+D/ActivityLifecycle(  451): onDestroy -- ENTIRE lifecycle STOP
+
