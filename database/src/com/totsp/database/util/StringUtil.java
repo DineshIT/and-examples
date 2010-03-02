@@ -1,4 +1,4 @@
-package com.totsp.database;
+package com.totsp.database.util;
 
 
 public final class StringUtil {

@@ -1,4 +1,4 @@
-package com.totsp.database;
+package com.totsp.database.util;
 
 import java.io.File;
 import java.io.FileInputStream;
