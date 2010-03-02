@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.totsp.database.data.Book;
+
 public class BookAdd extends Activity {
 
    private MyApplication application;

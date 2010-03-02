@@ -2,6 +2,9 @@ package com.totsp.database;
 
 import android.app.Application;
 
+import com.totsp.database.data.Book;
+import com.totsp.database.data.DataHelper;
+
 public class MyApplication extends Application {
 
    private DataHelper dataHelper;   

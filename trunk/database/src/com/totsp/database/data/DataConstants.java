@@ -1,4 +1,4 @@
-package com.totsp.database;
+package com.totsp.database.data;
 
 public class DataConstants {   
    public static final String BOOKID = "bookid";

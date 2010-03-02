@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.totsp.database.data.Book;
+
 import java.util.ArrayList;
 
 public class Main extends Activity {
