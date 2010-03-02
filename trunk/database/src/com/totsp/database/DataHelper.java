@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 /**
  * Oversimplified Android DB example.
+ * Includes SQLite foreign keys and unique constraints - though contrived example.
  * 
  * @author ccollins
  *
@@ -62,9 +63,7 @@ public class DataHelper {
    // DB methods
    //
 
-   //
-   // book
-   //   
+   // book      
    public long insertBook(Book b) {
       long bookId = 0L;
       if (b != null && b.getTitle() != null) {
@@ -79,7 +78,7 @@ public class DataHelper {
 
          try {
             // insert authors as needed
-            HashSet<Long> authorIds = new HashSet<Long>();
+            ArrayList<Long> authorIds = new ArrayList<Long>();
             if (b.getAuthors() != null) {
                String[] names = StringUtil.expandComma(b.getAuthors());
                for (String name : names) {
@@ -149,8 +148,8 @@ public class DataHelper {
       return b;
    }
 
-   public HashSet<Book> selectAllBooks() {
-      HashSet<Book> set = new HashSet<Book>();
+   public ArrayList<Book> selectAllBooks() {
+      ArrayList<Book> list = new ArrayList<Book>();
       Cursor c =
                this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID, DataConstants.TITLE }, null, null, null,
                         null, DataConstants.TITLE + " desc", null);
@@ -159,7 +158,7 @@ public class DataHelper {
             Book b = new Book();
             b.setId(c.getLong(0));
             b.setTitle(c.getString(1));
-            set.add(b);
+            list.add(b);
          } while (c.moveToNext());
       }
       if (c != null && !c.isClosed()) {
@@ -167,14 +166,14 @@ public class DataHelper {
       }
 
       // add authors (again, a hack)
-      for (Book b : set) {
+      for (Book b : list) {
          this.appendAuthors(b);
       }
-      return set;
+      return list;
    }
 
    private void appendAuthors(Book b) {
-      HashSet<Author> authors = this.selectAuthorsByBook(b.getId());
+      ArrayList<Author> authors = this.selectAuthorsByBook(b.getId());
       String[] names = new String[authors.size()];
       int i = 0;
       for (Author a : authors) {
@@ -184,10 +183,8 @@ public class DataHelper {
       b.setAuthors(StringUtil.contractComma(names));
    }
 
-   //
    // book-author data
-   //   
-   public void insertBookAuthorData(long bookId, HashSet<Long> authorIds) {
+   public void insertBookAuthorData(long bookId, ArrayList<Long> authorIds) {
       for (Long authorId : authorIds) {
          ContentValues values = new ContentValues();
          values.put(DataConstants.BOOKID, bookId);
@@ -196,9 +193,7 @@ public class DataHelper {
       }
    }
 
-   //
    // author
-   //
    public long insertAuthor(Author a) {
       long authorId = 0L;
       if (a != null && a.getName() != null) {
@@ -245,8 +240,8 @@ public class DataHelper {
       return a;
    }
 
-   public HashSet<Author> selectAllAuthors() {
-      HashSet<Author> set = new HashSet<Author>();
+   public ArrayList<Author> selectAllAuthors() {
+      ArrayList<Author> list = new ArrayList<Author>();
       Cursor c =
                this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null, null,
                         null, null, DataConstants.NAME + " desc", null);
@@ -255,17 +250,17 @@ public class DataHelper {
             Author a = new Author();
             a.setId(c.getLong(0));
             a.setName(c.getString(1));
-            set.add(a);
+            list.add(a);
          } while (c.moveToNext());
       }
       if (c != null && !c.isClosed()) {
          c.close();
       }
-      return set;
+      return list;
    }
 
-   public HashSet<Author> selectAuthorsByBook(long bookId) {
-      HashSet<Author> authors = new HashSet<Author>();
+   public ArrayList<Author> selectAuthorsByBook(long bookId) {
+      ArrayList<Author> authors = new ArrayList<Author>();
       Cursor c =
                this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.BOOKID + " = ?",
                         new String[] { String.valueOf(bookId) }, null, null, null);
@@ -281,9 +276,7 @@ public class DataHelper {
       return authors;
    }
 
-   //
    // super delete - clears all tables
-   //
    public void deleteAllDataYesIAmSure() {
       Log.i(Main.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
       this.db.beginTransaction();
