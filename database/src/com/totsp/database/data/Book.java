@@ -1,4 +1,4 @@
-package com.totsp.database;
+package com.totsp.database.data;
 
 
 public final class Book {

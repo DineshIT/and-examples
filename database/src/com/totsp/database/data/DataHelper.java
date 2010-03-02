@@ -1,4 +1,4 @@
-package com.totsp.database;
+package com.totsp.database.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.totsp.database.Main;
 import com.totsp.database.util.StringUtil;
 
 import java.util.ArrayList;
