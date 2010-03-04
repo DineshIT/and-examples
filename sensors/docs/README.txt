@@ -1,8 +1,13 @@
-and-sensors
------------
+and-restaurantfinder
+--------------------
 
-Simple app that dynamically determines what sensors
-are available and then displays raw data.
+Simple application that allows user
+to search for a restaurant (optionally by cusisine type)
+in their area, and get reviews, map, or call. 
 
-See http://developer.android.com/reference/android/hardware/SensorEvent.html
-for details on the data values (x,y,z).
+Demonstrates XML parsing, HTTP networking (ultra simple right now, 
+plan to update to HttpHelper), Application object, ListView, 
+and other basic concepts involved with a multi-activity Android app.
+
+Originally adapted from the Unlocking Android example of the same name
+(though modified here in several ways, and used with newer SDKs). 
