@@ -44,7 +44,7 @@ public class Main extends Activity {
       this.listView.setEmptyView(this.findViewById(R.id.empty));
       this.listView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            Toast.makeText(Main.this, "Selected book - " + Main.this.books.get(index).toString(), Toast.LENGTH_SHORT)
+            Toast.makeText(Main.this, "Selected book - " + Main.this.books.get(index).toStringFull(), Toast.LENGTH_SHORT)
                      .show();
          }
       });
