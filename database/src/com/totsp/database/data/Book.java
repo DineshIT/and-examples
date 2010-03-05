@@ -43,5 +43,9 @@ public final class Book {
    public String toString() {
       return this.title;
    }
+   
+   public String toStringFull() {
+      return this.title + " by: " + this.authors;
+   }
 
 }
