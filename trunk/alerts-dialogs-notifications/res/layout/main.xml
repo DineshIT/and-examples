@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<Button android:id="@+id/toast"
+		android:layout_width="200dp" android:layout_height="wrap_content"
+		android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
+		android:text="Show Toast" />
+
+	<Button android:id="@+id/alert"
+		android:layout_width="200dp" android:layout_height="wrap_content"
+		android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
+		android:text="Show AlertDialog" />		
+		    
+    <Button android:id="@+id/progress_dialog"
+        android:layout_width="200dp" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
+        android:text="Show ProgressDialog" />
+   
+   <Button android:id="@+id/progress_bar"
+        android:layout_width="200dp" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
+        android:text="Show ProgressBar" />
+		
+	<Button android:id="@+id/notification"
+        android:layout_width="200dp" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:layout_gravity="center_horizontal"
+        android:text="Show Notification" />   
+
+</LinearLayout>
