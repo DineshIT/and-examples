@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_marginBottom="10px"
+			android:text="Select a Network Operation" />
+
+		<Button android:id="@+id/main_get_button" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="SIMPLE HTTP JAVA.NET" />
+
+		<Button android:id="@+id/main_apache_button"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="APACHE HTTPCLIENT" />
+
+		<Button android:id="@+id/main_apacheviahelper_button"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="APACHE VIA HELPER" />
+
+		<Button android:id="@+id/main_helper_button"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="HTTP HELPER FORM" />
+
+		<Button android:id="@+id/main_delicious_button"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="DEL.ICIO.US LOGIN and POSTS" />
+
+		<Button android:id="@+id/main_gclientlogin_button"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="GOOGLE CLIENTLOGIN and TOKEN" />
+
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginTop="20px"
+			android:text="Status Output:" />
+		<TextView android:id="@+id/main_status" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginBottom="20px" />
+
+	</LinearLayout>
+</ScrollView>
