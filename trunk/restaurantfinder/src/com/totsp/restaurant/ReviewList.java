@@ -21,11 +21,10 @@ import java.util.List;
  * "List" of reviews screen - show reviews that match Criteria user selected. Users ReviewFetcher
  * which makes a Google Base call.
  * 
- * @author charliecollins
+ * @author ccollins
  */
 public class ReviewList extends ListActivity {
 
-    private static final String CLASSTAG = ReviewList.class.getSimpleName();
     private static final int MENU_CHANGE_CRITERIA = Menu.FIRST + 1;
     private static final int MENU_GET_NEXT_PAGE = Menu.FIRST;
     private static final int NUM_RESULTS_PER_PAGE = 8;
