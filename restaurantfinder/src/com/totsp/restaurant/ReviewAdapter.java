@@ -40,7 +40,19 @@ public class ReviewAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        Review review = this.reviews.get(position);
+       
+       Review review = this.reviews.get(position);
+       
+       // always try to RE-USE the convertView if it is present      
+       ReviewListView view = null;
+       if (convertView != null) {
+          view = (ReviewListView) convertView;
+          view.name.setText(review.name);
+          view.rating.setText(review.rating);
+       } else {
+          view = new ReviewListView(this.context, review.name, review.rating);
+       }
+        
         return new ReviewListView(this.context, review.name, review.rating);
     }
 
