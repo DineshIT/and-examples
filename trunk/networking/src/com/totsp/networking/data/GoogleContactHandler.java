@@ -20,7 +20,7 @@ public class GoogleContactHandler extends DefaultHandler {
    private boolean inEntry;
    StringBuilder sb;
 
-   public GoogleContactHandler() {      
+   public GoogleContactHandler() {
    }
 
    @Override
@@ -38,18 +38,18 @@ public class GoogleContactHandler extends DefaultHandler {
       throws SAXException {
 
       if (localName.equals(GoogleContactHandler.ENTRY)) {
-         this.inEntry = true;         
+         this.inEntry = true;
       }
 
       if (this.inEntry && localName.equals("title")) {
-         this.sb = new StringBuilder();       
+         this.sb = new StringBuilder();
       }
    }
 
    @Override
    public void endElement(final String namespaceURI, final String localName, final String qName) throws SAXException {
       if (localName.equals(GoogleContactHandler.ENTRY)) {
-         if (this.inEntry) {           
+         if (this.inEntry) {
             this.inEntry = false;
          }
       }

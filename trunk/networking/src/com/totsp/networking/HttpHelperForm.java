@@ -46,27 +46,27 @@ public class HttpHelperForm extends Activity {
    public void onCreate(final Bundle icicle) {
       super.onCreate(icicle);
       // inflate the SAME view XML layout file as ApacheHttpWithAuth Activity (re-use it)
-      this.setContentView(R.layout.http_helper_form);
+      setContentView(R.layout.http_helper_form);
 
-      this.url = (EditText) this.findViewById(R.id.htth_url);
-      this.method = (Spinner) this.findViewById(R.id.htth_method);
-      this.param1Name = (EditText) this.findViewById(R.id.htth_param1_name);
-      this.param1Value = (EditText) this.findViewById(R.id.htth_param1_value);
-      this.param2Name = (EditText) this.findViewById(R.id.htth_param2_name);
-      this.param2Value = (EditText) this.findViewById(R.id.htth_param2_value);
-      this.param3Name = (EditText) this.findViewById(R.id.htth_param3_name);
-      this.param3Value = (EditText) this.findViewById(R.id.htth_param3_value);
-      this.user = (EditText) this.findViewById(R.id.htth_user);
-      this.pass = (EditText) this.findViewById(R.id.htth_pass);
-      this.go = (Button) this.findViewById(R.id.htth_go_button);
-      this.output = (TextView) this.findViewById(R.id.htth_output);
+      url = (EditText) findViewById(R.id.htth_url);
+      method = (Spinner) findViewById(R.id.htth_method);
+      param1Name = (EditText) findViewById(R.id.htth_param1_name);
+      param1Value = (EditText) findViewById(R.id.htth_param1_value);
+      param2Name = (EditText) findViewById(R.id.htth_param2_name);
+      param2Value = (EditText) findViewById(R.id.htth_param2_value);
+      param3Name = (EditText) findViewById(R.id.htth_param3_name);
+      param3Value = (EditText) findViewById(R.id.htth_param3_value);
+      user = (EditText) findViewById(R.id.htth_user);
+      pass = (EditText) findViewById(R.id.htth_pass);
+      go = (Button) findViewById(R.id.htth_go_button);
+      output = (TextView) findViewById(R.id.htth_output);
 
       ArrayAdapter<String> methods =
                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[] { "GET", "POST" });
       methods.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      this.method.setAdapter(methods);
+      method.setAdapter(methods);
 
-      this.go.setOnClickListener(new OnClickListener() {
+      go.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             HttpHelperForm.this.output.setText("");
@@ -136,20 +136,22 @@ public class HttpHelperForm extends Activity {
       private final HttpHelper httpHelper = new HttpHelper();
 
       // can use UI thread here
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Performing HTTP request...");
-         this.dialog.show();
+         dialog.setMessage("Performing HTTP request...");
+         dialog.show();
       }
 
       // automatically done on worker thread (separate from UI thread)
+      @Override
       protected String doInBackground(final RequestBean... requestBeans) {
          RequestBean requestBean = requestBeans[0];
          String result = null;
          if (requestBean.method.equals("GET")) {
-            result = this.httpHelper.performGet(requestBean.url, requestBean.user, requestBean.pass, null);
+            result = httpHelper.performGet(requestBean.url, requestBean.user, requestBean.pass, null);
          } else if (requestBean.method.equals("POST")) {
             result =
-                     this.httpHelper.performPost(HttpHelper.MIME_FORM_ENCODED, requestBean.url, requestBean.user,
+                     httpHelper.performPost(HttpHelper.MIME_FORM_ENCODED, requestBean.url, requestBean.user,
                               requestBean.pass, null, requestBean.params);
          } else {
             Log.e(Constants.LOG_TAG, "Unknown request method - " + requestBean.method);
@@ -158,9 +160,10 @@ public class HttpHelperForm extends Activity {
       }
 
       // can use UI thread here
+      @Override
       protected void onPostExecute(final String result) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
 
          HttpHelperForm.this.output.setText(result);

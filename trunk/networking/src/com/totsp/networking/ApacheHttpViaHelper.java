@@ -23,61 +23,65 @@ import com.totsp.networking.data.HttpHelper;
  */
 public class ApacheHttpViaHelper extends Activity {
 
-    private static final String URL1 = "http://www.comedycentral.com/rss/jokes/index.jhtml";
-    private static final String URL2 = "http://feeds.theonion.com/theonion/daily";
+   private static final String URL1 = "http://www.comedycentral.com/rss/jokes/index.jhtml";
+   private static final String URL2 = "http://feeds.theonion.com/theonion/daily";
 
-    private Spinner urlChooser;
-    private Button button;
-    private TextView output;
+   private Spinner urlChooser;
+   private Button button;
+   private TextView output;
 
-    @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        // inflate the SAME view XML layout file as ApacheHTTPSimple Activity (re-use it)
-        this.setContentView(R.layout.apache_http_simple);
+   @Override
+   public void onCreate(final Bundle icicle) {
+      super.onCreate(icicle);
+      // inflate the SAME view XML layout file as ApacheHTTPSimple Activity (re-use it)
+      setContentView(R.layout.apache_http_simple);
 
-        this.urlChooser = (Spinner) findViewById(R.id.apache_url);
-        ArrayAdapter<String> urls = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[] {
-            ApacheHttpViaHelper.URL1, ApacheHttpViaHelper.URL2 });
-        urls.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.urlChooser.setAdapter(urls);
+      urlChooser = (Spinner) findViewById(R.id.apache_url);
+      ArrayAdapter<String> urls =
+               new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[] {
+                        ApacheHttpViaHelper.URL1, ApacheHttpViaHelper.URL2 });
+      urls.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      urlChooser.setAdapter(urls);
 
-        this.button = (Button) findViewById(R.id.apachego_button);
-        this.output = (TextView) findViewById(R.id.apache_output);
+      button = (Button) findViewById(R.id.apachego_button);
+      output = (TextView) findViewById(R.id.apache_output);
 
-        this.button.setOnClickListener(new OnClickListener() {
+      button.setOnClickListener(new OnClickListener() {
 
-            public void onClick(final View v) {
-                output.setText("");
-                new HttpRequestTask().execute(urlChooser.getSelectedItem().toString());
-            }
-        });
-    };    
-    
-    // AsyncTask
-    private class HttpRequestTask extends AsyncTask<String, Void, String> {
-       private final ProgressDialog dialog = new ProgressDialog(ApacheHttpViaHelper.this);
+         public void onClick(final View v) {
+            output.setText("");
+            new HttpRequestTask().execute(urlChooser.getSelectedItem().toString());
+         }
+      });
+   };
 
-       private HttpHelper httpHelper = new HttpHelper();
-       
-       // can use UI thread here
-       protected void onPreExecute() {
-          this.dialog.setMessage("Performing HTTP request...");
-          this.dialog.show();
-       }
+   // AsyncTask
+   private class HttpRequestTask extends AsyncTask<String, Void, String> {
+      private final ProgressDialog dialog = new ProgressDialog(ApacheHttpViaHelper.this);
 
-       // automatically done on worker thread (separate from UI thread)
-       protected String doInBackground(final String... args) {
-          return this.httpHelper.performGet(args[0], null, null, null);
-       }
+      private HttpHelper httpHelper = new HttpHelper();
 
-       // can use UI thread here
-       protected void onPostExecute(final String result) {
-          if (this.dialog.isShowing()) {
-             this.dialog.dismiss();
-          }
+      // can use UI thread here
+      @Override
+      protected void onPreExecute() {
+         dialog.setMessage("Performing HTTP request...");
+         dialog.show();
+      }
 
-          ApacheHttpViaHelper.this.output.setText(result);
-       }
-    }
+      // automatically done on worker thread (separate from UI thread)
+      @Override
+      protected String doInBackground(final String... args) {
+         return httpHelper.performGet(args[0], null, null, null);
+      }
+
+      // can use UI thread here
+      @Override
+      protected void onPostExecute(final String result) {
+         if (dialog.isShowing()) {
+            dialog.dismiss();
+         }
+
+         ApacheHttpViaHelper.this.output.setText(result);
+      }
+   }
 }

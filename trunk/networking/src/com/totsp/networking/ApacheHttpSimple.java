@@ -40,19 +40,19 @@ public class ApacheHttpSimple extends Activity {
    @Override
    public void onCreate(final Bundle icicle) {
       super.onCreate(icicle);
-      this.setContentView(R.layout.apache_http_simple);
+      setContentView(R.layout.apache_http_simple);
 
-      this.urlChooser = (Spinner) this.findViewById(R.id.apache_url);
+      urlChooser = (Spinner) findViewById(R.id.apache_url);
       ArrayAdapter<String> urls =
                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[] {
                         ApacheHttpSimple.URL1, ApacheHttpSimple.URL2 });
       urls.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      this.urlChooser.setAdapter(urls);
+      urlChooser.setAdapter(urls);
 
-      this.button = (Button) this.findViewById(R.id.apachego_button);
-      this.output = (TextView) this.findViewById(R.id.apache_output);
+      button = (Button) findViewById(R.id.apachego_button);
+      output = (TextView) findViewById(R.id.apache_output);
 
-      this.button.setOnClickListener(new OnClickListener() {
+      button.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             ApacheHttpSimple.this.output.setText("");
@@ -66,12 +66,14 @@ public class ApacheHttpSimple extends Activity {
       private final ProgressDialog dialog = new ProgressDialog(ApacheHttpSimple.this);
 
       // can use UI thread here
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Performing HTTP request...");
-         this.dialog.show();
+         dialog.setMessage("Performing HTTP request...");
+         dialog.show();
       }
 
       // automatically done on worker thread (separate from UI thread)
+      @Override
       protected String doInBackground(final String... args) {
          String result = null;
 
@@ -90,9 +92,10 @@ public class ApacheHttpSimple extends Activity {
       }
 
       // can use UI thread here
+      @Override
       protected void onPostExecute(final String result) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
 
          ApacheHttpSimple.this.output.setText(result);

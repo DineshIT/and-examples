@@ -25,65 +25,64 @@ public class Main extends Activity {
    @Override
    public void onCreate(final Bundle icicle) {
       super.onCreate(icicle);
-      this.setContentView(R.layout.main);
+      setContentView(R.layout.main);
 
-      this.getButton = (Button) findViewById(R.id.main_get_button);
-      this.getButton.setOnClickListener(new OnClickListener() {
+      getButton = (Button) findViewById(R.id.main_get_button);
+      getButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             startActivity(new Intent(Main.this, JavaNetHttpGet.class));
          }
       });
 
-      this.apacheButton = (Button) findViewById(R.id.main_apache_button);
-      this.apacheButton.setOnClickListener(new OnClickListener() {
+      apacheButton = (Button) findViewById(R.id.main_apache_button);
+      apacheButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             startActivity(new Intent(Main.this, ApacheHttpSimple.class));
          }
       });
 
-      this.apacheViaHelperButton = (Button) findViewById(R.id.main_apacheviahelper_button);
-      this.apacheViaHelperButton.setOnClickListener(new OnClickListener() {
+      apacheViaHelperButton = (Button) findViewById(R.id.main_apacheviahelper_button);
+      apacheViaHelperButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             startActivity(new Intent(Main.this, ApacheHttpViaHelper.class));
          }
       });
 
-      this.helperFormButton = (Button) findViewById(R.id.main_helper_button);
-      this.helperFormButton.setOnClickListener(new OnClickListener() {
+      helperFormButton = (Button) findViewById(R.id.main_helper_button);
+      helperFormButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             startActivity(new Intent(Main.this, HttpHelperForm.class));
          }
       });
 
-      this.deliciousButton = (Button) findViewById(R.id.main_delicious_button);
-      this.deliciousButton.setOnClickListener(new OnClickListener() {
+      deliciousButton = (Button) findViewById(R.id.main_delicious_button);
+      deliciousButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             startActivity(new Intent(Main.this, DeliciousRecentPosts.class));
          }
       });
 
-      this.gClientLoginButton = (Button) findViewById(R.id.main_gclientlogin_button);
-      this.gClientLoginButton.setOnClickListener(new OnClickListener() {
+      gClientLoginButton = (Button) findViewById(R.id.main_gclientlogin_button);
+      gClientLoginButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             startActivity(new Intent(Main.this, GoogleClientLogin.class));
          }
       });
 
-      this.status = (TextView) findViewById(R.id.main_status);
-      
-      this.getStatus();
+      status = (TextView) findViewById(R.id.main_status);
+
+      getStatus();
    }
 
-  
    private void getStatus() {
       ConnectivityManager cMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
       NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
-      this.status.setText(netInfo.toString());
+      status.setText(netInfo.toString());
    }
 }

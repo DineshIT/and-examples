@@ -29,6 +29,7 @@ import java.util.HashMap;
  * (obtain a token, and send it as a header with subsequent requests).
  * 
  * TODO does *NOT* properly respond to Captcha authentication redirects, needs to.
+ * TODO most Google APIs use OAuth now also, if possible, that is preferred
  * 
  * @author ccollins
  * 
@@ -57,27 +58,27 @@ public class GoogleClientLogin extends Activity {
    private Button getToken;
    private Button clearToken;
    private TextView tokenText;
-      
+
    private ListView listView;
    private ArrayAdapter<String> adapter;
 
    @Override
    public void onCreate(final Bundle icicle) {
       super.onCreate(icicle);
-      this.setContentView(R.layout.google_client_login);
+      setContentView(R.layout.google_client_login);
 
-      this.emailAddress = (EditText) this.findViewById(R.id.gclient_email);
-      this.password = (EditText) this.findViewById(R.id.gclient_password);
+      emailAddress = (EditText) findViewById(R.id.gclient_email);
+      password = (EditText) findViewById(R.id.gclient_password);
 
-      this.getToken = (Button) this.findViewById(R.id.gclientgettoken_button);
-      this.clearToken = (Button) this.findViewById(R.id.gclientcleartoken_button);
-      this.getContacts = (Button) this.findViewById(R.id.gclientgetcontacts_button);
-      this.tokenText = (TextView) this.findViewById(R.id.gclient_token);
-      
-      this.listView = (ListView) this.findViewById(R.id.contactslistview);
-      this.listView.setEmptyView(this.findViewById(R.id.empty));      
+      getToken = (Button) findViewById(R.id.gclientgettoken_button);
+      clearToken = (Button) findViewById(R.id.gclientcleartoken_button);
+      getContacts = (Button) findViewById(R.id.gclientgetcontacts_button);
+      tokenText = (TextView) findViewById(R.id.gclient_token);
 
-      this.getToken.setOnClickListener(new OnClickListener() {
+      listView = (ListView) findViewById(R.id.contactslistview);
+      listView.setEmptyView(findViewById(R.id.empty));
+
+      getToken.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             GoogleClientLogin.this.bindListView(null);
 
@@ -93,7 +94,7 @@ public class GoogleClientLogin extends Activity {
          }
       });
 
-      this.clearToken.setOnClickListener(new OnClickListener() {
+      clearToken.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             GoogleClientLogin.this.bindListView(null);
             GoogleClientLogin.this.tokenText.setText("");
@@ -101,9 +102,9 @@ public class GoogleClientLogin extends Activity {
          }
       });
 
-      this.getContacts.setOnClickListener(new OnClickListener() {
-         public void onClick(final View v) {            
-            if (GoogleClientLogin.this.tokenValue != null && !GoogleClientLogin.this.tokenValue.equals("")) {
+      getContacts.setOnClickListener(new OnClickListener() {
+         public void onClick(final View v) {
+            if ((GoogleClientLogin.this.tokenValue != null) && !GoogleClientLogin.this.tokenValue.equals("")) {
                GoogleClientLogin.this.getContacts(GoogleClientLogin.this.emailAddress.getText().toString(),
                         GoogleClientLogin.this.tokenValue);
             } else {
@@ -113,15 +114,15 @@ public class GoogleClientLogin extends Activity {
          }
       });
    };
-   
+
    private void bindListView(ArrayList<String> titles) {
       // if you have a lot of data you will want to use a CursorAdapter (or other custom adapter)
       // for this simple case, not much data, can get away with ArrayAdapter
       if (titles == null) {
          titles = new ArrayList<String>(0);
       }
-      this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, titles);
-      this.listView.setAdapter(this.adapter);
+      adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, titles);
+      listView.setAdapter(adapter);
    }
 
    private class RequestBean {
@@ -170,15 +171,17 @@ public class GoogleClientLogin extends Activity {
       private final HttpHelper httpHelper = new HttpHelper();
 
       // can use UI thread here
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Performing Get Contacts request...");
-         this.dialog.show();
+         dialog.setMessage("Performing Get Contacts request...");
+         dialog.show();
       }
 
       // automatically done on worker thread (separate from UI thread)
+      @Override
       protected ArrayList<String> doInBackground(final RequestBean... args) {
          RequestBean bean = args[0];
-         String result = this.httpHelper.performGet(bean.url, null, null, bean.headers);
+         String result = httpHelper.performGet(bean.url, null, null, bean.headers);
          GoogleContactHandler handler = new GoogleContactHandler();
          try {
             Xml.parse(new ByteArrayInputStream(result.getBytes("UTF-8")), Xml.Encoding.UTF_8, handler);
@@ -189,9 +192,10 @@ public class GoogleClientLogin extends Activity {
       }
 
       // can use UI thread here
+      @Override
       protected void onPostExecute(final ArrayList<String> result) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
 
          GoogleClientLogin.this.bindListView(result);
@@ -205,22 +209,25 @@ public class GoogleClientLogin extends Activity {
       private final HttpHelper httpHelper = new HttpHelper();
 
       // can use UI thread here
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Performing Get Token request...");
-         this.dialog.show();
+         dialog.setMessage("Performing Get Token request...");
+         dialog.show();
       }
 
       // automatically done on worker thread (separate from UI thread)
+      @Override
       protected String doInBackground(final RequestBean... args) {
          RequestBean requestBean = args[0];
-         return this.httpHelper.performPost(HttpHelper.MIME_FORM_ENCODED, requestBean.url, null, null, null,
+         return httpHelper.performPost(HttpHelper.MIME_FORM_ENCODED, requestBean.url, null, null, null,
                   requestBean.params);
       }
 
       // can use UI thread here
+      @Override
       protected void onPostExecute(final String result) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
 
          String authToken = result;
