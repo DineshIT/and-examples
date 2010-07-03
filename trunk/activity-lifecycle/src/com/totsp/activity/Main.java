@@ -25,7 +25,7 @@ public class Main extends Activity {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.main);
+      setContentView(R.layout.main);
       Log.d(Main.LOG_TAG, "onCreate -- ENTIRE lifecycle START");
 
       b = new Button(this);
@@ -36,7 +36,7 @@ public class Main extends Activity {
          }
       });
 
-      LinearLayout l = (LinearLayout) this.findViewById(R.id.mainlayout);
+      LinearLayout l = (LinearLayout) findViewById(R.id.mainlayout);
       LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(200, 50);
       p.setMargins(0, 20, 0, 0);
       l.addView(b, p);
