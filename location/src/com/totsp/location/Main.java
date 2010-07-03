@@ -20,41 +20,41 @@ public class Main extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.main);
-      this.layout = (LinearLayout) this.findViewById(R.id.mainlayout);
-      this.layoutParams =
+      setContentView(R.layout.main);
+      layout = (LinearLayout) findViewById(R.id.mainlayout);
+      layoutParams =
                new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
                         android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-      this.layoutParams.setMargins(0, 10, 0, 0);
+      layoutParams.setMargins(0, 10, 0, 0);
 
-      this.crawlProviders();
+      crawlProviders();
    }
 
    private void crawlProviders() {
-      LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+      LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
       TextView divider = new TextView(this);
       divider.setText("-------------------------------------------------------");
-      this.layout.addView(divider);
-      
+      layout.addView(divider);
+
       List<String> providers = lm.getAllProviders();
       for (String p : providers) {
          TextView tv = new TextView(this);
-         this.layout.addView(tv, this.layoutParams);
+         layout.addView(tv, layoutParams);
          tv.setText("Provider present (enabled= " + lm.isProviderEnabled(p) + "): " + p);
 
          TextView lastKnown = new TextView(this);
          TextView updates = new TextView(this);
 
          lastKnown.setText("last known location - " + lm.getLastKnownLocation(p));
-         this.layout.addView(lastKnown, this.layoutParams);
+         layout.addView(lastKnown, layoutParams);
 
-         lm.requestLocationUpdates(p, 500, 5, this.getLocationListener(updates));
-         this.layout.addView(updates, this.layoutParams);
-         
+         lm.requestLocationUpdates(p, 500, 5, getLocationListener(updates));
+         layout.addView(updates, layoutParams);
+
          TextView div = new TextView(this);
          div.setText("-------------------------------------------------------");
-         this.layout.addView(div);
+         layout.addView(div);
       }
    }
 
