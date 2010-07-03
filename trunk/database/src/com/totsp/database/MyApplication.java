@@ -7,25 +7,25 @@ import com.totsp.database.data.DataHelper;
 
 public class MyApplication extends Application {
 
-   private DataHelper dataHelper;   
+   private DataHelper dataHelper;
    private Book selectedBook;
-   
+
    @Override
    public void onCreate() {
       super.onCreate();
-      this.dataHelper = new DataHelper(this);      
-   }   
-   
+      dataHelper = new DataHelper(this);
+   }
+
    @Override
    public void onTerminate() {
       // NOTE - this method is not guaranteed to be called
-      this.dataHelper.cleanup(); 
-      this.selectedBook = null;
-      super.onTerminate();      
+      dataHelper.cleanup();
+      selectedBook = null;
+      super.onTerminate();
    }
 
    public DataHelper getDataHelper() {
-      return this.dataHelper;
+      return dataHelper;
    }
 
    public void setDataHelper(DataHelper dataHelper) {
@@ -33,15 +33,15 @@ public class MyApplication extends Application {
    }
 
    public Book getSelectedBook() {
-      return this.selectedBook;
+      return selectedBook;
    }
 
    public void setSelectedBook(Book selectedBook) {
       this.selectedBook = selectedBook;
-   }   
-   
+   }
+
    // so that onSaveInstanceState/onRestoreInstanceState can use with just saved title
    public void establishSelectedBook(String title) {
-      this.selectedBook = this.dataHelper.selectBook(title);
+      selectedBook = dataHelper.selectBook(title);
    }
 }

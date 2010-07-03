@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 public final class FileUtil {
-   
-   private FileUtil() {      
+
+   private FileUtil() {
    }
 
    public static void copyFile(File src, File dst) throws IOException {
@@ -17,10 +17,12 @@ public final class FileUtil {
       try {
          inChannel.transferTo(0, inChannel.size(), outChannel);
       } finally {
-         if (inChannel != null)
+         if (inChannel != null) {
             inChannel.close();
-         if (outChannel != null)
+         }
+         if (outChannel != null) {
             outChannel.close();
+         }
       }
-   }   
+   }
 }
