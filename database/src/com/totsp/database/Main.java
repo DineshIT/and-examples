@@ -32,32 +32,32 @@ public class Main extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.main);
+      setContentView(R.layout.main);
 
-      this.application = (MyApplication) this.getApplication();
+      application = (MyApplication) getApplication();
 
       // crude, but works for small data set - just select all 
-      this.books = this.application.getDataHelper().selectAllBooks();
+      books = application.getDataHelper().selectAllBooks();
 
       // use a ListView to show the data
-      this.listView = (ListView) this.findViewById(R.id.booklistview);
-      this.listView.setEmptyView(this.findViewById(R.id.empty));
-      this.listView.setOnItemClickListener(new OnItemClickListener() {
+      listView = (ListView) findViewById(R.id.booklistview);
+      listView.setEmptyView(findViewById(R.id.empty));
+      listView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(final AdapterView<?> parent, final View v, final int index, final long id) {
-            Toast.makeText(Main.this, "Selected book - " + Main.this.books.get(index).toStringFull(), Toast.LENGTH_SHORT)
-                     .show();
+            Toast.makeText(Main.this, "Selected book - " + Main.this.books.get(index).toStringFull(),
+                     Toast.LENGTH_SHORT).show();
          }
       });
 
-      this.bindListView(this.books);
+      bindListView(books);
    }
 
    private void bindListView(final ArrayList<Book> books) {
       // if you have a lot of data you will want to use a CursorAdapter (or other custom adapter)
       // for this simple case, not much data, can get away with ArrayAdapter
       Log.d(Main.LOG_TAG, "books size - " + books.size());
-      this.adapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, books);
-      this.listView.setAdapter(this.adapter);
+      adapter = new ArrayAdapter<Book>(this, android.R.layout.simple_list_item_1, books);
+      listView.setAdapter(adapter);
    }
 
    @Override
@@ -70,14 +70,14 @@ public class Main extends Activity {
    @Override
    public boolean onOptionsItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
-      case MENU_BOOK_ADD:
-         this.startActivity(new Intent(Main.this, BookAdd.class));
-         return true;
-      case MENU_MANAGE_DATA:
-         this.startActivity(new Intent(Main.this, ManageData.class));
-         return true;
-      default:
-         return super.onOptionsItemSelected(item);
+         case MENU_BOOK_ADD:
+            startActivity(new Intent(Main.this, BookAdd.class));
+            return true;
+         case MENU_MANAGE_DATA:
+            startActivity(new Intent(Main.this, ManageData.class));
+            return true;
+         default:
+            return super.onOptionsItemSelected(item);
       }
    }
 }

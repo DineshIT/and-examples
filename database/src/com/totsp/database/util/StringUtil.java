@@ -1,6 +1,5 @@
 package com.totsp.database.util;
 
-
 public final class StringUtil {
 
    public static void main(String[] args) {
@@ -8,11 +7,11 @@ public final class StringUtil {
       String out = StringUtil.contractComma(test);
       System.out.println("out - " + out);
    }
-   
+
    public static String[] expandComma(String input) {
       return input.split(",\\s*");
    }
-   
+
    public static String contractComma(String[] input) {
       String result = null;
       if (input.length == 1) {

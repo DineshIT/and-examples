@@ -22,15 +22,15 @@ public class BookAdd extends Activity {
    @Override
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      this.setContentView(R.layout.bookadd);
+      setContentView(R.layout.bookadd);
 
-      this.application = (MyApplication) this.getApplication();
+      application = (MyApplication) getApplication();
 
-      this.title = (EditText) this.findViewById(R.id.title);
-      this.authors = (EditText) this.findViewById(R.id.authors);
+      title = (EditText) findViewById(R.id.title);
+      authors = (EditText) findViewById(R.id.authors);
 
-      this.insertButton = (Button) this.findViewById(R.id.insertbutton);
-      this.insertButton.setOnClickListener(new OnClickListener() {
+      insertButton = (Button) findViewById(R.id.insertbutton);
+      insertButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             Toast.makeText(BookAdd.this, BookAdd.this.title.getText() + " " + BookAdd.this.authors.getText(),
                      Toast.LENGTH_LONG).show();

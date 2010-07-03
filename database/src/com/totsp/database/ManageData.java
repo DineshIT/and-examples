@@ -38,12 +38,12 @@ public class ManageData extends Activity {
    public void onCreate(final Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      this.application = (MyApplication) this.getApplication();
+      application = (MyApplication) getApplication();
 
-      this.setContentView(R.layout.managedata);
+      setContentView(R.layout.managedata);
 
-      this.exportDbToSdButton = (Button) this.findViewById(R.id.exportdbtosdbutton);
-      this.exportDbToSdButton.setOnClickListener(new OnClickListener() {
+      exportDbToSdButton = (Button) findViewById(R.id.exportdbtosdbutton);
+      exportDbToSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             Log.i(Main.LOG_TAG, "exporting database to external storage");
             new AlertDialog.Builder(ManageData.this).setMessage(
@@ -67,8 +67,8 @@ public class ManageData extends Activity {
          }
       });
 
-      this.importDbFromSdButton = (Button) this.findViewById(R.id.importdbfromsdbutton);
-      this.importDbFromSdButton.setOnClickListener(new OnClickListener() {
+      importDbFromSdButton = (Button) findViewById(R.id.importdbfromsdbutton);
+      importDbFromSdButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             new AlertDialog.Builder(ManageData.this).setMessage(
                      "Are you sure (this will overwrite existing current data)?").setPositiveButton("Yes",
@@ -78,7 +78,7 @@ public class ManageData extends Activity {
                               Log.i(Main.LOG_TAG, "importing database from external storage, and resetting database");
                               new ImportDatabaseTask().execute();
                               // sleep momentarily so that database reset stuff has time to take place (else Main reloads too fast)
-                              SystemClock.sleep(1000);
+                              SystemClock.sleep(500);
                               ManageData.this.startActivity(new Intent(ManageData.this, Main.class));
                            } else {
                               Toast.makeText(ManageData.this,
@@ -93,8 +93,8 @@ public class ManageData extends Activity {
          }
       });
 
-      this.clearDbButton = (Button) this.findViewById(R.id.cleardbutton);
-      this.clearDbButton.setOnClickListener(new OnClickListener() {
+      clearDbButton = (Button) findViewById(R.id.cleardbutton);
+      clearDbButton.setOnClickListener(new OnClickListener() {
          public void onClick(final View v) {
             new AlertDialog.Builder(ManageData.this).setMessage("Are you sure (this will delete all data)?")
                      .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -121,12 +121,14 @@ public class ManageData extends Activity {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
       // can use UI thread here
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Exporting database...");
-         this.dialog.show();
+         dialog.setMessage("Exporting database...");
+         dialog.show();
       }
 
       // automatically done on worker thread (separate from UI thread)
+      @Override
       protected Boolean doInBackground(final Void... args) {
 
          File dbFile = new File(Environment.getDataDirectory() + "/data/com.totsp.database/databases/sample.db");
@@ -148,9 +150,10 @@ public class ManageData extends Activity {
       }
 
       // can use UI thread here
+      @Override
       protected void onPostExecute(final Boolean success) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
          if (success) {
             Toast.makeText(ManageData.this, "Export successful!", Toast.LENGTH_SHORT).show();
@@ -163,12 +166,14 @@ public class ManageData extends Activity {
    private class ImportDatabaseTask extends AsyncTask<Void, Void, String> {
       private final ProgressDialog dialog = new ProgressDialog(ManageData.this);
 
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Importing database...");
-         this.dialog.show();
+         dialog.setMessage("Importing database...");
+         dialog.show();
       }
 
       // could pass the params used here in AsyncTask<String, Void, String> - but not being re-used
+      @Override
       protected String doInBackground(final Void... args) {
 
          File dbBackupFile = new File(Environment.getExternalStorageDirectory() + "/databasedata/sample.db");
@@ -194,9 +199,10 @@ public class ManageData extends Activity {
          }
       }
 
+      @Override
       protected void onPostExecute(final String errMsg) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
          if (errMsg == null) {
             Toast.makeText(ManageData.this, "Import successful!", Toast.LENGTH_SHORT).show();

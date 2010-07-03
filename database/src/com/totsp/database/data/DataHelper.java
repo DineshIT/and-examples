@@ -29,15 +29,13 @@ public class DataHelper {
    private static final String AUTHOR_TABLE = "author";
    private static final String BOOKAUTHOR_TABLE = "bookauthor";
 
-   private Context context;
    private SQLiteDatabase db;
 
-   // can use precompiled statements - put em here, then init in ctor (this.db.compileStatement(stmt))
+   // can use precompiled statements - put em here, then init in ctor (db.compileStatement(stmt))
 
    public DataHelper(Context context) {
-      this.context = context;
-      OpenHelper openHelper = new OpenHelper(this.context);
-      this.db = openHelper.getWritableDatabase();
+      OpenHelper openHelper = new OpenHelper(context);
+      db = openHelper.getWritableDatabase();
 
       if (openHelper.isDbCreated()) {
          // insert default data here if needed
@@ -45,20 +43,20 @@ public class DataHelper {
    }
 
    public SQLiteDatabase getDb() {
-      return this.db;
+      return db;
    }
 
    public void resetDbConnection() {
       Log.i(Main.LOG_TAG, "resetting database connection (close and re-open).");
-      this.cleanup();
-      this.db =
+      cleanup();
+      db =
                SQLiteDatabase.openDatabase("/data/data/com.totsp.database/databases/sample.db", null,
                         SQLiteDatabase.OPEN_READWRITE);
    }
 
    public void cleanup() {
-      if (this.db != null && this.db.isOpen()) {
-         this.db.close();
+      if ((db != null) && db.isOpen()) {
+         db.close();
       }
    }
 
@@ -69,45 +67,45 @@ public class DataHelper {
    // book      
    public long insertBook(Book b) {
       long bookId = 0L;
-      if (b != null && b.getTitle() != null) {
+      if ((b != null) && (b.title != null)) {
 
-         Book bookExists = this.selectBook(b.getTitle());
+         Book bookExists = selectBook(b.title);
          if (bookExists != null) {
-            return bookExists.getId();
+            return bookExists.id;
          }
 
          // begin transaction
-         this.db.beginTransaction();
+         db.beginTransaction();
 
          try {
             // insert authors as needed
             ArrayList<Long> authorIds = new ArrayList<Long>();
-            if (b.getAuthors() != null) {
-               String[] names = StringUtil.expandComma(b.getAuthors());
+            if (b.authors != null) {
+               String[] names = StringUtil.expandComma(b.authors);
                for (String name : names) {
-                  Author authorExists = this.selectAuthor(name);
+                  Author authorExists = selectAuthor(name);
                   if (authorExists == null) {
-                     authorIds.add(this.insertAuthor(new Author(name)));
+                     authorIds.add(insertAuthor(new Author(name)));
                   } else {
-                     authorIds.add(authorExists.getId());
+                     authorIds.add(authorExists.id);
                   }
                }
             }
 
             // insert book
             ContentValues values = new ContentValues();
-            values.put(DataConstants.TITLE, b.getTitle());
-            bookId = db.insert(BOOK_TABLE, null, values);
+            values.put(DataConstants.TITLE, b.title);
+            bookId = db.insert(DataHelper.BOOK_TABLE, null, values);
 
             // insert bookauthors
-            this.insertBookAuthorData(bookId, authorIds);
+            insertBookAuthorData(bookId, authorIds);
 
             // set transaction success
             db.setTransactionSuccessful();
          } catch (SQLException e) {
             Log.e(Main.LOG_TAG, "Error inserting book", e);
          } finally {
-            this.db.endTransaction();
+            db.endTransaction();
          }
       } else {
          throw new IllegalArgumentException("Error, book cannot be null, and must have a unique title");
@@ -118,20 +116,20 @@ public class DataHelper {
    public Book selectBook(long id) {
       Book b = null;
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.TITLE }, DataConstants.BOOKID + " = ?",
+               db.query(DataHelper.BOOK_TABLE, new String[] { DataConstants.TITLE }, DataConstants.BOOKID + " = ?",
                         new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          b = new Book();
-         b.setId(id);
-         b.setTitle(c.getString(0));
+         b.id = id;
+         b.title = c.getString(0);
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
 
       // include authors with sep query (hack - should do a join/group for this)
       if (b != null) {
-         this.appendAuthors(b);
+         appendAuthors(b);
       }
 
       return b;
@@ -140,12 +138,12 @@ public class DataHelper {
    public Book selectBook(String title) {
       Book b = null;
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.TITLE + " = ?",
+               db.query(DataHelper.BOOK_TABLE, new String[] { DataConstants.BOOKID }, DataConstants.TITLE + " = ?",
                         new String[] { title }, null, null, null, "1");
       if (c.moveToFirst()) {
-         b = this.selectBook(c.getLong(0));
+         b = selectBook(c.getLong(0));
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
       return b;
@@ -154,36 +152,36 @@ public class DataHelper {
    public ArrayList<Book> selectAllBooks() {
       ArrayList<Book> list = new ArrayList<Book>();
       Cursor c =
-               this.db.query(BOOK_TABLE, new String[] { DataConstants.BOOKID, DataConstants.TITLE }, null, null, null,
-                        null, DataConstants.TITLE + " desc", null);
+               db.query(DataHelper.BOOK_TABLE, new String[] { DataConstants.BOOKID, DataConstants.TITLE }, null, null,
+                        null, null, DataConstants.TITLE + " desc", null);
       if (c.moveToFirst()) {
          do {
             Book b = new Book();
-            b.setId(c.getLong(0));
-            b.setTitle(c.getString(1));
+            b.id = c.getLong(0);
+            b.title = c.getString(1);
             list.add(b);
          } while (c.moveToNext());
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
 
       // add authors (again, a hack)
       for (Book b : list) {
-         this.appendAuthors(b);
+         appendAuthors(b);
       }
       return list;
    }
 
    private void appendAuthors(Book b) {
-      ArrayList<Author> authors = this.selectAuthorsByBook(b.getId());
+      ArrayList<Author> authors = selectAuthorsByBook(b.id);
       String[] names = new String[authors.size()];
       int i = 0;
       for (Author a : authors) {
-         names[i] = a.getName();
+         names[i] = a.name;
          i++;
       }
-      b.setAuthors(StringUtil.contractComma(names));
+      b.authors = StringUtil.contractComma(names);
    }
 
    // book-author data
@@ -192,23 +190,23 @@ public class DataHelper {
          ContentValues values = new ContentValues();
          values.put(DataConstants.BOOKID, bookId);
          values.put(DataConstants.AUTHORID, authorId);
-         db.insert(BOOKAUTHOR_TABLE, null, values);
+         db.insert(DataHelper.BOOKAUTHOR_TABLE, null, values);
       }
    }
 
    // author
    public long insertAuthor(Author a) {
       long authorId = 0L;
-      if (a != null && a.getName() != null) {
+      if ((a != null) && (a.name != null)) {
 
-         Author authorExists = this.selectAuthor(a.getName());
+         Author authorExists = selectAuthor(a.name);
          if (authorExists != null) {
-            return authorExists.getId();
+            return authorExists.id;
          }
 
          ContentValues values = new ContentValues();
-         values.put(DataConstants.NAME, a.getName());
-         authorId = db.insert(AUTHOR_TABLE, null, values);
+         values.put(DataConstants.NAME, a.name);
+         authorId = db.insert(DataHelper.AUTHOR_TABLE, null, values);
       }
       return authorId;
    }
@@ -216,14 +214,14 @@ public class DataHelper {
    public Author selectAuthor(long id) {
       Author a = null;
       Cursor c =
-               this.db.query(AUTHOR_TABLE, new String[] { DataConstants.NAME }, DataConstants.AUTHORID + " = ?",
+               db.query(DataHelper.AUTHOR_TABLE, new String[] { DataConstants.NAME }, DataConstants.AUTHORID + " = ?",
                         new String[] { String.valueOf(id) }, null, null, null, "1");
       if (c.moveToFirst()) {
          a = new Author();
-         a.setId(id);
-         a.setName(c.getString(0));
+         a.id = id;
+         a.name = c.getString(0);
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
       return a;
@@ -232,12 +230,12 @@ public class DataHelper {
    public Author selectAuthor(String name) {
       Author a = null;
       Cursor c =
-               this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.NAME + " = ?",
+               db.query(DataHelper.AUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.NAME + " = ?",
                         new String[] { name }, null, null, null, "1");
       if (c.moveToFirst()) {
-         a = this.selectAuthor(c.getLong(0));
+         a = selectAuthor(c.getLong(0));
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
       return a;
@@ -246,17 +244,17 @@ public class DataHelper {
    public ArrayList<Author> selectAllAuthors() {
       ArrayList<Author> list = new ArrayList<Author>();
       Cursor c =
-               this.db.query(AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null, null,
-                        null, null, DataConstants.NAME + " desc", null);
+               db.query(DataHelper.AUTHOR_TABLE, new String[] { DataConstants.AUTHORID, DataConstants.NAME }, null,
+                        null, null, null, DataConstants.NAME + " desc", null);
       if (c.moveToFirst()) {
          do {
             Author a = new Author();
-            a.setId(c.getLong(0));
-            a.setName(c.getString(1));
+            a.id = c.getLong(0);
+            a.name = c.getString(1);
             list.add(a);
          } while (c.moveToNext());
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
       return list;
@@ -265,15 +263,15 @@ public class DataHelper {
    public ArrayList<Author> selectAuthorsByBook(long bookId) {
       ArrayList<Author> authors = new ArrayList<Author>();
       Cursor c =
-               this.db.query(BOOKAUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.BOOKID + " = ?",
-                        new String[] { String.valueOf(bookId) }, null, null, null);
+               db.query(DataHelper.BOOKAUTHOR_TABLE, new String[] { DataConstants.AUTHORID }, DataConstants.BOOKID
+                        + " = ?", new String[] { String.valueOf(bookId) }, null, null, null);
       if (c.moveToFirst()) {
          do {
-            Author a = this.selectAuthor(c.getLong(0));
+            Author a = selectAuthor(c.getLong(0));
             authors.add(a);
          } while (c.moveToNext());
       }
-      if (c != null && !c.isClosed()) {
+      if ((c != null) && !c.isClosed()) {
          c.close();
       }
       return authors;
@@ -282,16 +280,16 @@ public class DataHelper {
    // super delete - clears all tables
    public void deleteAllDataYesIAmSure() {
       Log.i(Main.LOG_TAG, "deleting all data from database - deleteAllYesIAmSure invoked");
-      this.db.beginTransaction();
+      db.beginTransaction();
       try {
-         this.db.delete(AUTHOR_TABLE, null, null);
-         this.db.delete(BOOKAUTHOR_TABLE, null, null);
-         this.db.delete(BOOK_TABLE, null, null);
-         this.db.setTransactionSuccessful();
+         db.delete(DataHelper.AUTHOR_TABLE, null, null);
+         db.delete(DataHelper.BOOKAUTHOR_TABLE, null, null);
+         db.delete(DataHelper.BOOK_TABLE, null, null);
+         db.setTransactionSuccessful();
       } finally {
-         this.db.endTransaction();
+         db.endTransaction();
       }
-      this.db.execSQL("vacuum");
+      db.execSQL("vacuum");
    }
 
    //
@@ -307,7 +305,7 @@ public class DataHelper {
       private boolean dbCreated;
 
       OpenHelper(Context context) {
-         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+         super(context, DataHelper.DATABASE_NAME, null, DataHelper.DATABASE_VERSION);
       }
 
       @Override
@@ -317,7 +315,7 @@ public class DataHelper {
          StringBuilder sb = new StringBuilder();
 
          // book table
-         sb.append("CREATE TABLE " + BOOK_TABLE + " (");
+         sb.append("CREATE TABLE " + DataHelper.BOOK_TABLE + " (");
          sb.append(DataConstants.BOOKID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.TITLE + " TEXT");
          sb.append(");");
@@ -325,7 +323,7 @@ public class DataHelper {
 
          // author table
          sb.setLength(0);
-         sb.append("CREATE TABLE " + AUTHOR_TABLE + " (");
+         sb.append("CREATE TABLE " + DataHelper.AUTHOR_TABLE + " (");
          sb.append(DataConstants.AUTHORID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.NAME + " TEXT");
          sb.append(");");
@@ -333,38 +331,38 @@ public class DataHelper {
 
          // bookauthor join table
          sb.setLength(0);
-         sb.append("CREATE TABLE " + BOOKAUTHOR_TABLE + " (");
+         sb.append("CREATE TABLE " + DataHelper.BOOKAUTHOR_TABLE + " (");
          sb.append(DataConstants.BOOKAUTHORID + " INTEGER PRIMARY KEY, ");
          sb.append(DataConstants.BOOKID + " INTEGER, ");
          sb.append(DataConstants.AUTHORID + " INTEGER, ");
-         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + BOOK_TABLE + "(" + DataConstants.BOOKID
-                  + "), ");
-         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + AUTHOR_TABLE + "("
+         sb.append("FOREIGN KEY(" + DataConstants.BOOKID + ") REFERENCES " + DataHelper.BOOK_TABLE + "("
+                  + DataConstants.BOOKID + "), ");
+         sb.append("FOREIGN KEY(" + DataConstants.AUTHORID + ") REFERENCES " + DataHelper.AUTHOR_TABLE + "("
                   + DataConstants.AUTHORID + ") ");
          sb.append(");");
          db.execSQL(sb.toString());
 
          // constraints 
-         db.execSQL("CREATE UNIQUE INDEX uidxBookTitle ON " + BOOK_TABLE + "(" + DataConstants.TITLE
+         db.execSQL("CREATE UNIQUE INDEX uidxBookTitle ON " + DataHelper.BOOK_TABLE + "(" + DataConstants.TITLE
                   + " COLLATE NOCASE)");
-         db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + AUTHOR_TABLE + "(" + DataConstants.NAME
+         db.execSQL("CREATE UNIQUE INDEX uidxAuthorName ON " + DataHelper.AUTHOR_TABLE + "(" + DataConstants.NAME
                   + " COLLATE NOCASE)");
 
-         this.dbCreated = true;
+         dbCreated = true;
       }
 
       @Override
       public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
          Log.i(Main.LOG_TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:" + newVersion);
          // export old data first, then upgrade, then import
-         db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + AUTHOR_TABLE);
-         db.execSQL("DROP TABLE IF EXISTS " + BOOKAUTHOR_TABLE);
+         db.execSQL("DROP TABLE IF EXISTS " + DataHelper.BOOK_TABLE);
+         db.execSQL("DROP TABLE IF EXISTS " + DataHelper.AUTHOR_TABLE);
+         db.execSQL("DROP TABLE IF EXISTS " + DataHelper.BOOKAUTHOR_TABLE);
          onCreate(db);
       }
 
       public boolean isDbCreated() {
-         return this.dbCreated;
+         return dbCreated;
       }
    }
 }
