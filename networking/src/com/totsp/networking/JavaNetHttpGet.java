@@ -27,11 +27,11 @@ public class JavaNetHttpGet extends Activity {
       super.onCreate(icicle);
       setContentView(R.layout.java_net_http_simple);
 
-      this.getInput = (EditText) findViewById(R.id.get_input);
-      this.getOutput = (TextView) findViewById(R.id.get_output);
-      this.getButton = (Button) findViewById(R.id.get_button);
+      getInput = (EditText) findViewById(R.id.get_input);
+      getOutput = (TextView) findViewById(R.id.get_output);
+      getButton = (Button) findViewById(R.id.get_button);
 
-      this.getButton.setOnClickListener(new OnClickListener() {
+      getButton.setOnClickListener(new OnClickListener() {
 
          public void onClick(View v) {
             getOutput.setText("");
@@ -54,7 +54,7 @@ public class JavaNetHttpGet extends Activity {
       URL url = null;
 
       try {
-         url = new URL(location);         
+         url = new URL(location);
       } catch (MalformedURLException e) {
          Log.e(Constants.LOG_TAG, e.getMessage(), e);
       }

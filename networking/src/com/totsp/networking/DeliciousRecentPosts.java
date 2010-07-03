@@ -38,14 +38,14 @@ public class DeliciousRecentPosts extends Activity {
    @Override
    public void onCreate(final Bundle icicle) {
       super.onCreate(icicle);
-      this.setContentView(R.layout.delicious_posts);
+      setContentView(R.layout.delicious_posts);
 
-      this.user = (EditText) findViewById(R.id.del_user);
-      this.pass = (EditText) findViewById(R.id.del_pass);
-      this.button = (Button) findViewById(R.id.delgo_button);
-      this.output = (TextView) findViewById(R.id.del_output);
+      user = (EditText) findViewById(R.id.del_user);
+      pass = (EditText) findViewById(R.id.del_pass);
+      button = (Button) findViewById(R.id.delgo_button);
+      output = (TextView) findViewById(R.id.del_output);
 
-      this.button.setOnClickListener(new OnClickListener() {
+      button.setOnClickListener(new OnClickListener() {
 
          public void onClick(final View v) {
             output.setText("");
@@ -80,25 +80,28 @@ public class DeliciousRecentPosts extends Activity {
       private HttpHelper httpHelper = new HttpHelper();
 
       // can use UI thread here
+      @Override
       protected void onPreExecute() {
-         this.dialog.setMessage("Performing HTTP request...");
-         this.dialog.show();
+         dialog.setMessage("Performing HTTP request...");
+         dialog.show();
       }
 
       // automatically done on worker thread (separate from UI thread)
+      @Override
       protected String doInBackground(final String... args) {
          String user = args[0];
          String pass = args[1];
-         return this.httpHelper.performPost(DeliciousRecentPosts.URL_GET_POSTS_RECENT, user, pass, null, null);
+         return httpHelper.performPost(DeliciousRecentPosts.URL_GET_POSTS_RECENT, user, pass, null, null);
       }
 
       // can use UI thread here
+      @Override
       protected void onPostExecute(final String result) {
-         if (this.dialog.isShowing()) {
-            this.dialog.dismiss();
+         if (dialog.isShowing()) {
+            dialog.dismiss();
          }
 
-         String resultParsed = parseXmlResult(result);         
+         String resultParsed = parseXmlResult(result);
          DeliciousRecentPosts.this.output.setText(resultParsed);
       }
    }
